@@ -1,6 +1,9 @@
 {
   "name": "form_filler",
   "version": "0.0.1",
+  "engines": {
+    "node": "12.x"
+  },
   "description": "Api para Llenado Automatizado de formularios por parte de la DGII",
   "main": "app.js",
   "scripts": {
