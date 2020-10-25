@@ -1,10 +1,8 @@
-require('winax');
 var express = require('express');
 var fs = require('fs');
 var path = require('path');
 var XLSX = require('xlsx');
 var router = express.Router();
-var Excel = new ActiveXObject("Excel.Application");
 var { makeName,fillExcel } = require('../functions');
 //SELECTS
 /*
@@ -40,10 +38,8 @@ router.get('/',async (req,res)=>{
 
         var response = fillExcel(workbookRoute,req.body);
         res.sendFile(workbookRoute,(err) => {
-            // res.send('FORBIDEN');
             console.log(err);
         });
-        // res.json({'code' : response ? 1 : 2});
     } catch (error) {
         throw error;
     }
