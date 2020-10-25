@@ -21,7 +21,7 @@ app.use(cors());
 app.use(helmet());
 
 //setting parser
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb', extended: true}));
 
 
 // Setting routes

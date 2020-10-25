@@ -1,7 +1,7 @@
 var modules = {};
 var fs = require('fs');
 
-var tipoCompra = {
+var invoiceTypes = {
     1: '01-GASTOS DE PERSONAL ',
     2: '02-GASTOS POR TRABAJOS, SUMINISTROS Y SERVICIOS ',
     3: '03-ARRENDAMIENTOS ',
@@ -14,7 +14,7 @@ var tipoCompra = {
     10: '10 -ADQUISICIONES DE ACTIVOS ',
     11: '11- GASTOS DE SEGUROS'
   };
-  var tipoPago = {
+  var invoicePaymentTypes = {
     1:'01 - EFECTIVO',
     2:'02 - CHEQUES/TRANSFERENCIAS/DEPÓSITO',
     3:'03 - TARJETA CRÉDITO/DÉBITO',
@@ -33,34 +33,34 @@ modules.fillExcel = function (file,data) {
 
     try {
         Excel.DisplayAlerts = false;
-        test.ActiveSheet.Range('C4').Value = data.rnc_cliente;
-        test.ActiveSheet.Range('C5').Value = data.periodo;
-        test.ActiveSheet.Range('C6').Value = data.facturas.length;
+        test.ActiveSheet.Range('C4').Value = data.clientRnc;
+        test.ActiveSheet.Range('C5').Value = data.period;
+        test.ActiveSheet.Range('C6').Value = data.invoices.length;
         Excel.Run("Formato606.validacion_global");
         Excel.Run("liberarFilas");
         Excel.Run("establecerValoresPorDefecto");
-        data.facturas.forEach((factura,linea) => {
+        data.invoices.forEach((invoice,linea) => {
             //RNC
-            test.ActiveSheet.Range(`B${linea+12}`).Value = factura.rnc;
+            test.ActiveSheet.Range(`B${linea+12}`).Value = invoice.rnc;
             //TIPO DE COMPRA
-            test.ActiveSheet.Range(`D${linea+12}`).Value = tipoCompra[factura.tipoCompra];
+            test.ActiveSheet.Range(`D${linea+12}`).Value = invoiceTypes[invoice.invoiceType];
             //NCF
-            test.ActiveSheet.Range(`E${linea+12}`).Value = factura.ncf;
+            test.ActiveSheet.Range(`E${linea+12}`).Value = invoice.ncf;
             //NCF MODIFICADO EN CASO DE QUE EXISTA
-            if (typeof factura.ncfMod !== 'undefined') {
-                test.ActiveSheet.Range(`F${linea+12}`).Value = factura.ncfMod;
+            if (typeof invoice.ncfMod !== 'undefined') {
+                test.ActiveSheet.Range(`F${linea+12}`).Value = invoice.ncfMod;
             }
             //FECHA
-            let fecha = factura.fecha.split(new RegExp('/|\\|-'));
-            test.ActiveSheet.Range(`G${linea+12}`).Value = data.periodo;
-            test.ActiveSheet.Range(`H${linea+12}`).Value = fecha[0] > 31 ? fecha[2] : fecha[0];
+            let date = invoice.date.split(new RegExp('/|\\|-'));
+            test.ActiveSheet.Range(`G${linea+12}`).Value = data.period;
+            test.ActiveSheet.Range(`H${linea+12}`).Value = date[0] > 31 ? date[2] : date[0];
             //MONTOS
                 //TOTAL BRUTO Y MONTO TOTAL
-                test.ActiveSheet.Range(`${rangoServicios.includes(factura.tipoCompra) ? 'K' : 'L'}${linea+12}`).Value = factura.totalBruto;
+                test.ActiveSheet.Range(`${rangoServicios.includes(invoice.invoiceType) ? 'K' : 'L'}${linea+12}`).Value = invoice.payAmount;
                 //ITBIS
-                test.ActiveSheet.Range(`N${linea+12}`).Value = factura.itbis;
+                test.ActiveSheet.Range(`N${linea+12}`).Value = invoice.itbis;
             //TIPO DE PAGO
-            test.ActiveSheet.Range(`Z${linea+12}`).Value = tipoPago[factura.tipoPago];  
+            test.ActiveSheet.Range(`Z${linea+12}`).Value = invoicePaymentTypes[invoice.invoicePaymentType];  
         })
         //VALIDAR, GUARDAR Y CERRAR
         Excel.Run("Formato606.validacion_global");

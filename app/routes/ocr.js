@@ -1,12 +1,8 @@
 var express = require('express');
 var router = express.Router();
 const axios = require('axios');
-const fs = require('fs');
-const util = require('util');
 const formData = require('form-data');
-const form = new formData();
-// form.append("file", fs.createReadStream('./tests/rot.jpg') );
-// form.append("filetype
+
 
 
 function getFromRegex(regex,string){
@@ -21,32 +17,11 @@ function getFromRegex(regex,string){
         });
         return result;
     }
-
-let url = 'https://api.ocr.space/parse/image'
-let options = {
-    headers : {
-      apiKey: '42d2651d1288957',
-      ...form.getHeaders()
-    }
-};
-
-  
-
-router.get('/',(req,res)=>{
-  var rnc_client = '132094123';
-   var base64image  = req.body.base64image ;
-  form.append("base64image",  base64image );
-  form.append('scale', 'true');
-  form.append('apiKey', '42d2651d1288957');
-  form.append('isTable', 'true');
-  form.append('OCREngine', '2');
-  axios.post(url, form, options)
-  .then(function (response) {
-    res.header('content-type','application/json')
-    let string =response.data.ParsedResults[0].ParsedText;
-    console.log('starting decoding');
+function getDataFromInvoice(string,rnc_client)
+{
     var separators = ['/','-'];
     var obj ={}
+    
         obj.NCF = getFromRegex('B([0-9].{9}|O[0-9].{8})',string).map((i) => i.replace('O','0'));
         obj.RNC = getFromRegex('[0-9\-?]+$',string)
         .map((i) => {
@@ -64,7 +39,8 @@ router.get('/',(req,res)=>{
           return value !== undefined && value !== rnc_client && value.length >= 9 && value.length <= 11 && !value.includes('809') && self.indexOf(value) === index
         });
 
-        obj.fecha = getFromRegex('([0-9]*/[0-9]*/[0-9]*|[0-9]*\\-[0-9]*\\-[0-9]*)',string).map((i) => 
+        obj.fecha = getFromRegex('([0-9]*/[0-9]*/[0-9]*|[0-9]*\\-[0-9]*\\-[0-9]*)',string)
+        .map((i) => 
         { 
           if( i.split(new RegExp(separators.join('|')))[2] == new Date().getFullYear())
            return i;
@@ -75,11 +51,58 @@ router.get('/',(req,res)=>{
         .filter((i,index,self) => { return i !== undefined && !obj.RNC.includes(i) && self.indexOf(i) === index && i != 0  && !i.includes('809') && ( i.includes(',') || i.includes('.') || i.length === 3|| (i.length === 5 && i.includes('.')))})
         .map((i) => { return parseFloat(i.replace(/,/g, ''))})
         .sort((a,b) => { return a < b;});
+          var ncf_mod = obj.NCF.filter( (value, index, self) => {return value.includes('B04')});
+          if(ncf_mod.length != 0) obj.NCF_MOD = ncf_mod;
 
-    res.send(obj);
-  })
-  .catch(function (error) {
-    res.send({Error : error.isAxiosError ? 'Error en la peticion del OCR' : 'Error Interno'})
+        return obj;
+}
+let url = 'https://api.ocr.space/parse/image'
+
+
+  
+router.post('/',(req,res)=>{
+
+  // {
+  //   base64image : base64image ,
+  //   scale : true,
+  //   apiKey :' 42d2651d1288957',
+  //   isTable : true,
+  //   OCREngine : 2,
+  // }
+  
+  var rnc_client = '132094123';
+   var base64image  = req.body.base64 ;
+  var result = [];
+   base64image.forEach((b64,i) => {
+    var form = new formData();
+      let options = {
+        headers : {
+          apiKey: '42d2651d1288957',
+          ...form.getHeaders()
+        }
+    };
+    form.append("base64image",  b64 );
+    form.append('scale', 'true');
+    form.append('apiKey', '42d2651d1288957');
+    form.append('isTable', 'true');
+    form.append('OCREngine', '2');
+    result.push(axios.post(url, form, options)
+    .then(function (response) {
+      let string =response.data.ParsedResults[0].ParsedText;
+      
+      var obj = getDataFromInvoice(string,rnc_client)
+  
+      return obj;
+    })
+    .catch(function (error) {
+      console.log(error);
+      return;
+    }))
+
+   })
+
+   Promise.all(result).then(function (results) {
+    res.send(results);
   });
 })
 
