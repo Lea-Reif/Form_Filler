@@ -62,16 +62,9 @@ let url = 'https://api.ocr.space/parse/image'
   
 router.post('/',(req,res)=>{
 
-  // {
-  //   base64image : base64image ,
-  //   scale : true,
-  //   apiKey :' 42d2651d1288957',
-  //   isTable : true,
-  //   OCREngine : 2,
-  // }
-  
-  var rnc_client = '132094123';
-   var base64image  = req.body.base64 ;
+  var rnc_client = req.body.rnc_client,
+      base64image  = req.body.base64 ;
+    console.log(base64image.length);
   var result = [];
    base64image.forEach((b64,i) => {
     var form = new formData();

@@ -23,7 +23,9 @@ app.use(helmet());
 //setting parser
 app.use(bodyParser.json({limit: '50mb', extended: true}));
 
-
+app.get('/', (req,res) => {
+    res.json({ here_is: 'YOUR API WORKING :)'});
+})
 // Setting routes
 files.forEach((file)=>{
     file =file.split('.').shift();
