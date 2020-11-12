@@ -43,7 +43,7 @@ function getDataFromInvoice(string,rnc_client)
         .map((i) => 
         { 
           if( i.split(new RegExp(separators.join('|')))[2] == new Date().getFullYear())
-           return i;
+           return i.split(new RegExp(separators.join('|'))).reverse().join('');
           }).filter((value,index, self) => { return value !== undefined && self.indexOf(value) === index;});
 
 

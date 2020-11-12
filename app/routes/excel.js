@@ -28,6 +28,7 @@ Van en SERVICIOS:
 
 router.post('/fill',(req,res)=>{
     try {
+        console.log(req.body);
         req.body = req.body;
         var codeName = makeName(7),
             workbookRoute = path.resolve((__dirname+`../../../public/filled_606/${codeName}.xls`));
