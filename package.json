@@ -34,5 +34,9 @@
     "request": "^2.88.2",
     "winax": "^1.20.0",
     "xlsx": "^0.16.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Lea-Reif/Form_Filler.git"
   }
 }
