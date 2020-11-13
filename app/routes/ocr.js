@@ -88,8 +88,8 @@ router.post('/',(req,res)=>{
       return obj;
     })
     .catch(function (error) {
-      console.log(error);
-      return;
+      res.json({error:error});
+      // throw error;
     }))
 
    })
