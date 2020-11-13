@@ -45,8 +45,8 @@ router.post('/fill',(req,res)=>{
         });
 
     } catch (error) {
-        res.json({error:error}) ;
-      }
+        throw error;
+    }
 });
 
 router.get('/file/:codeName', (req,res,next)=>{
@@ -61,7 +61,7 @@ router.get('/file/:codeName', (req,res,next)=>{
             console.log(err);
         });
       } catch(err) {
-        res.json(err)
+        console.error(err)
       }
 
        
