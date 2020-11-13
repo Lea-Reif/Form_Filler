@@ -5,7 +5,7 @@ const   bodyParser  = require('body-parser'),
         cors        = require('cors'),
         fs      = require('fs'),
         morgan = require('morgan'),
-        port        = 443 || 80;
+        port        = process.env.PORT || 5000;
 
 var routesDir = './app/routes/';
 var files = fs.readdirSync(routesDir);
