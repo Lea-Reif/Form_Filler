@@ -31,9 +31,8 @@ router.post('/fill',(req,res)=>{
         console.log(req.body);
         req.body = req.body;
         var codeName = makeName(7),
-            workbookRoute = path.resolve((`./public/filled_606/${codeName}.xls`));
+            workbookRoute = path.resolve((__dirname+`../../../public/filled_606/${codeName}.xls`));
         fs.copyFile( './config/606.xls', workbookRoute, (err) => {
-            res.json(err)
             if (err) throw err;
             return true;
         });
@@ -59,7 +58,7 @@ router.get('/file/:codeName', (req,res,next)=>{
             return next('FILE NOT FOUND');
         }
         res.sendFile(workbookRoute,(err) => {
-            res.json(err)
+            console.log(err);
         });
       } catch(err) {
         res.json(err)
