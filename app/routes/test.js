@@ -1,10 +1,12 @@
 var express = require('express');
 var router = express.Router();
+var path = require('path');
 
 
-router.post('/',async (req,res)=>{
+
+router.get('/',async (req,res)=>{
     try {
-        res.json(req.body.a)
+        res.json(path.join(path.dirname(require.main.filename),`/public/filled_606/${codename}`));
     } catch (error) {
         throw error;
     }

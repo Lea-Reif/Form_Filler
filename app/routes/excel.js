@@ -31,7 +31,7 @@ router.post('/fill',(req,res)=>{
         console.log(req.body);
         req.body = req.body;
         var codeName = makeName(7),
-            workbookRoute = path.resolve((__dirname+`../../../public/filled_606/${codeName}.xls`));
+            workbookRoute = path.join(path.dirname(require.main.filename),`/public/filled_606/${codeName}.xls`);
         fs.copyFile( './config/606.xls', workbookRoute, (err) => {
             if (err) throw err;
             return true;

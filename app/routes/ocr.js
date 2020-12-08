@@ -17,6 +17,7 @@ function getFromRegex(regex,string){
         });
         return result;
     }
+
 function getDataFromInvoice(string,rnc_client)
 {
     var separators = ['/','-'];
@@ -51,8 +52,8 @@ function getDataFromInvoice(string,rnc_client)
         .filter((i,index,self) => { return i !== undefined && !obj.RNC.includes(i) && self.indexOf(i) === index && i != 0  && !i.includes('809') && ( i.includes(',') || i.includes('.') || i.length === 3|| (i.length === 5 && i.includes('.')))})
         .map((i) => { return parseFloat(i.replace(/,/g, ''))})
         .sort((a,b) => { return a < b;});
-          var ncf_mod = obj.NCF.filter( (value, index, self) => {return value.includes('B04')});
-          if(ncf_mod.length != 0) obj.NCF_MOD = ncf_mod;
+        var ncf_mod = obj.NCF.filter( (value, index, self) => {return value.includes('B04')});
+        if(ncf_mod.length != 0) obj.NCF_MOD = ncf_mod;
 
         return obj;
 }
