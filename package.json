@@ -33,7 +33,7 @@
     "ocr-space-api-alt2": "^1.0.0-c",
     "request": "^2.88.2",
     "winax": "^1.20.0",
-    "xlsx": "^0.16.7"
+    "xlsx": "^0.17.0"
   },
   "repository": {
     "type": "git",
